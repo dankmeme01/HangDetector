@@ -57,9 +57,9 @@ Future<> handleDeath() {
     log("Showing a message box");
 
     auto content = fmt::format(
-        "Geometry Dash has been detected having a background hang, meaning the game window was closed, but the game is still running, just completely unresponsive.\n"
+        "Geometry Dash has been detected having a background hang, meaning the game window was closed, but the process is still running, just completely unresponsive.\n"
         "This is likely due to a bug in Geode or one of the mods you have installed. The information below can be very helpful for mod developers to diagnose the issue.\n\n"
-        "You are seeing this because of the Hang Detector mod.\n\n"
+        "You are seeing this because of the Hang Detector mod, which now killed the game and collected this information.\n\n"
         "Stack trace:\n"
     );
 
