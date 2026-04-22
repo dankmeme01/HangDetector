@@ -1,0 +1,17 @@
+{
+	"geode": "5.6.1",
+	"gd": {
+		"win": "2.2081"
+	},
+	"id": "dankmeme.hang-detector",
+	"name": "Hang Detector",
+	"version": "v1.0.0",
+	"developer": "dankmeme",
+	"description": "Detects when the game hangs after closure",
+	"dependencies": {},
+	"resources": {
+		"files": [
+			"./build/watchdog/watchdog.exe"
+		]
+	}
+}
