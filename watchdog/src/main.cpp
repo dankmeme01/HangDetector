@@ -132,6 +132,9 @@ Future<Result<>> asyncMain(int argc, const char** argv) {
             // on first menulayer entry, dump all loaded modules for symbolication purposes
             initCachedModules(g_pid);
         }
+
+        // nothing is happening, so wait a bit
+        co_await arc::sleep(Duration::fromMillis(50));
     }
 
     CloseHandle(g_parent);
