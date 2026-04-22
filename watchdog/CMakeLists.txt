@@ -5,7 +5,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CPM.cmake)
 
 add_executable(watchdog src/main.cpp)
 
-set(ARC_FEATURE_IOCP ON CACHE BOOL "" FORCE)
+set(ARC_FEATURE_NET ON CACHE BOOL "" FORCE)
 CPMAddPackage("gh:dankmeme01/arc@1.5.5")
 CPMAddPackage("gh:geode-sdk/json@3.3.0")
 

@@ -89,14 +89,21 @@ Future<Result<>> asyncMain(int argc, const char** argv) {
     auto logPath = std::string(argv[2]);
     g_logFile.emplace(logPath);
 
-    // set this shit
-    std::string_view fnAddrStr(argv[3]);
-    uint64_t tptr;
-    std::from_chars(fnAddrStr.data(), fnAddrStr.data() + fnAddrStr.size(), tptr);
-    g_tableAccessFn = reinterpret_cast<FnTableAccess>(tptr);
+    // parse port
+    std::string_view portStr(argv[3]);
+    uint16_t port;
+    std::from_chars(portStr.data(), portStr.data() + portStr.size(), port);
 
-    // open the pipe
-    auto pipe = ARC_CO_UNWRAP(co_await connectToPipe());
+    // open the stream
+    log("Attempting connection to 127.0.0.1:{}", port);
+
+    auto pipe = ARC_CO_UNWRAP((co_await arc::TcpStream::connect(
+        qsox::SocketAddress{qsox::Ipv4Address::LOCALHOST, port}
+    )).mapErr([](auto e) {
+        return fmt::format("Failed to connect: {}", e);
+    }));
+
+    log("Connection successful!", port);
 
     bool beenInMenu = false;
 

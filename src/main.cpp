@@ -61,26 +61,26 @@ arc::Future<matjson::Value> handleRequest(matjson::Value input) {
     });
 }
 
-arc::Future<> pipeFunc() {
+arc::Future<> pipeFunc(arc::TcpListener listener) {
     while (true) {
-        auto res = co_await acceptPipeConnection();
+        auto res = co_await listener.accept();
         if (!res) {
-            log::warn("Failed to accept pipe connection: {}", res.unwrapErr());
+            log::warn("Failed to accept connection: {}", res.unwrapErr());
             continue;
         }
 
-        auto pipe = std::move(res.unwrap());
-        log::info("Watchdog connected to our pipe!");
+        auto [stream, peer] = std::move(res.unwrap());
+        log::info("Accepted connection from watchdog on {}", peer.toString());
 
         while (true) {
-            auto json = co_await readJsonMessage(pipe);
+            auto json = co_await readJsonMessage(stream);
             if (!json) {
                 log::warn("Failed to read JSON message: {}", json.unwrapErr());
                 break;
             }
 
             auto result = co_await handleRequest(json.unwrap());
-            auto res = co_await writeJsonMessage(pipe, result);
+            auto res = co_await writeJsonMessage(stream, result);
             if (!res) {
                 log::warn("Failed to write JSON message: {}", res.unwrapErr());
                 break;
@@ -89,12 +89,22 @@ arc::Future<> pipeFunc() {
     }
 }
 
-$on_mod(Loaded) {
+arc::Future<> initialize() {
     auto exe = Mod::get()->getResourcesDir() / "watchdog.exe";
     if (!std::filesystem::exists(exe)) {
         log::error("watchdog.exe not found in {}", exe);
-        return;
+        co_return;
     }
+
+    auto lres = co_await arc::TcpListener::bind("0.0.0.0:0");
+    if (!lres) {
+        log::error("Failed to bind TCP listener: {}", lres.unwrapErr());
+        co_return;
+    }
+
+    auto listener = std::move(lres.unwrap());
+    auto port = listener.localAddress().unwrap().port();
+    log::info("TCP listener bound on 0.0.0.0:{}", port);
 
     auto s = utils::string::pathToString(exe);
     STARTUPINFO si = { sizeof(si) };
@@ -107,19 +117,23 @@ $on_mod(Loaded) {
         s,
         GetCurrentProcessId(),
         logPath,
-        (uint64_t)&GeodeFunctionTableAccess64
+        port
     );
 
     if (!CreateProcessA(nullptr, cmd.data(), nullptr, nullptr, FALSE, CREATE_NO_WINDOW, nullptr, nullptr, &si, &pi)) {
         log::error("Failed to launch watchdog.exe: {}", GetLastError());
-        return;
+        co_return;
     }
 
     // let it run
     CloseHandle(pi.hProcess);
     CloseHandle(pi.hThread);
 
-    arc::spawn(pipeFunc());
+    co_await pipeFunc(std::move(listener));
+}
+
+$on_mod(Loaded) {
+    arc::spawn(initialize());
 
     // create a watcher
     new GlobalWatcher();

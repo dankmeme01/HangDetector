@@ -19,7 +19,7 @@ else()
     message(STATUS "Found Geode: $ENV{GEODE_SDK}")
 endif()
 
-set(ARC_FEATURE_IOCP ON CACHE BOOL "" FORCE)
+set(ARC_FEATURE_NET ON CACHE BOOL "" FORCE)
 set(GEODE_ARC_VERSION "#d67b13185f7ce818cd0cd301561754e40e85b1db" CACHE STRING "" FORCE)
 add_subdirectory(watchdog)
 add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
