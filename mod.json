@@ -5,7 +5,7 @@
 	},
 	"id": "dankmeme.hang-detector",
 	"name": "Hang Detector",
-	"version": "v1.0.0",
+	"version": "v1.0.1",
 	"developer": "dankmeme",
 	"description": "Detects when the game hangs after closure",
 	"dependencies": {},
