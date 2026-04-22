@@ -110,7 +110,7 @@ $on_mod(Loaded) {
         (uint64_t)&GeodeFunctionTableAccess64
     );
 
-    if (!CreateProcessA(nullptr, cmd.data(), nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi)) {
+    if (!CreateProcessA(nullptr, cmd.data(), nullptr, nullptr, FALSE, CREATE_NO_WINDOW, nullptr, nullptr, &si, &pi)) {
         log::error("Failed to launch watchdog.exe: {}", GetLastError());
         return;
     }
