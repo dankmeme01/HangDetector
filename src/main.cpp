@@ -86,6 +86,8 @@ arc::Future<> pipeFunc(arc::TcpListener listener) {
                 break;
             }
         }
+
+        log::info("Connection to watchdog closed");
     }
 }
 

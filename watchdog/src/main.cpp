@@ -24,8 +24,8 @@ Future<std::optional<DWORD>> waitForExit(Duration deadline) {
 }
 
 Future<> handleDeath() {
-    log("Game likely died, giving 2.5 seconds to terminate and checking exit status..");
-    auto ec = co_await waitForExit(*Duration::fromSecs(2.5));
+    log("Game likely died, giving 2 seconds to terminate and checking exit status..");
+    auto ec = co_await waitForExit(Duration::fromSecs(2));
 
     if (ec) {
         log("Game exited with code {}, watchdog will terminate. Goodbye!", *ec);
@@ -103,7 +103,26 @@ Future<Result<>> asyncMain(int argc, const char** argv) {
         return fmt::format("Failed to connect: {}", e);
     }));
 
-    log("Connection successful!", port);
+    log("Connection successful! Pinging the server", port);
+    ARC_CO_UNWRAP((co_await writeJsonMessage(pipe, matjson::makeObject({
+        {"type", "ping"},
+    }))).mapErr([](auto e) {
+        return fmt::format("Failed to write JSON message: {}", e);
+    }));
+
+
+    auto tres = co_await arc::timeout(Duration::fromMillis(1000), readJsonMessage(pipe));
+    if (!tres) {
+        log("Timed out waiting for ping reply!!!");
+        co_return Err("Timed out waiting for ping reply");
+    }
+
+    if (auto e = tres.unwrap().err()) {
+        log("Failed to read JSON message: {}", e);
+        co_return Err("Failed to read JSON message");
+    }
+
+    log("Starting connection loop");
 
     bool beenInMenu = false;
 
@@ -117,7 +136,7 @@ Future<Result<>> asyncMain(int argc, const char** argv) {
             break;
         }
 
-        auto tres = co_await arc::timeout(Duration::fromMillis(500), readJsonMessage(pipe));
+        auto tres = co_await arc::timeout(Duration::fromMillis(1000), readJsonMessage(pipe));
         if (!tres) {
             log("Timed out waiting for JSON message");
             co_await handleDeath();
