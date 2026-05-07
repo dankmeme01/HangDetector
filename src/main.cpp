@@ -1,4 +1,5 @@
 #include <Geode/Geode.hpp>
+#include <asp/fs.hpp>
 #include <shared.hpp>
 
 using namespace geode::prelude;
@@ -93,7 +94,7 @@ arc::Future<> pipeFunc(arc::TcpListener listener) {
 
 arc::Future<> initialize() {
     auto exe = Mod::get()->getResourcesDir() / "watchdog.exe";
-    if (!std::filesystem::exists(exe)) {
+    if (!asp::fs::exists(exe)) {
         log::error("watchdog.exe not found in {}", exe);
         co_return;
     }
