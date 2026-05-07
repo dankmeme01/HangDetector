@@ -27,10 +27,10 @@ struct GlobalWatcher : public CCObject {
             return;
         }
 
-        state->scene = typeid(*scene).name();
+        state->scene = cocos::getObjectName(scene);
         auto layer = scene->getChildByType(0);
         if (layer) {
-            state->layer = typeid(*layer).name();
+            state->layer = cocos::getObjectName(layer);
         } else {
             state->layer.clear();
         }
