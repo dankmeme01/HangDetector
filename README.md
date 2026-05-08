@@ -8,6 +8,10 @@ Hang detector bundles a small program called <cy>watchdog</c>, that is launched 
 
 Watchdog gives the game a 2.5 second grace period. This should be enough for most sane static destructors to run. If the game still hasn't closed after that time passes, the game is killed and certain debug information is collected; rather than letting it potentially run forever.
 
+## What it does not do
+
+This mod *currently* does not detect any other kinds of crashes or main thread hangs that cause the game to freeze during gameplay, because it is difficult to know if the game froze forever or if it's just doing a heavy task.
+
 ## Credits
 
 [Prevter](https://github.com/Prevter/) - for making the logo!
