@@ -69,6 +69,10 @@ Future<> handleDeath() {
 
     MessageBoxA(nullptr, content.c_str(), "Game Hang Detected", MB_ICONERROR | MB_OK);
 
+    log("Killing parent process");
+
+    TerminateProcess(g_parent, 1);
+
     log("Goodbye!");
 }
 
