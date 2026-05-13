@@ -13,6 +13,7 @@ Future<std::optional<DWORD>> waitForExit(Duration deadline) {
         return WaitForSingleObject(g_parent, deadline.millis());
     });
 
+    log("WaitForSingleObject returned {}", waitResult);
     if (waitResult == WAIT_OBJECT_0) {
         DWORD ec;
         if (GetExitCodeProcess(g_parent, &ec)) {
@@ -24,8 +25,8 @@ Future<std::optional<DWORD>> waitForExit(Duration deadline) {
 }
 
 Future<> handleDeath() {
-    log("Game likely died, giving 2 seconds to terminate and checking exit status..");
-    auto ec = co_await waitForExit(Duration::fromSecs(2));
+    log("Game likely died, giving 3 seconds to terminate and checking exit status..");
+    auto ec = co_await waitForExit(Duration::fromSecs(3));
 
     if (ec) {
         log("Game exited with code {}, watchdog will terminate. Goodbye!", *ec);
