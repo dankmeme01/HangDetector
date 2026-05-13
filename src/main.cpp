@@ -113,7 +113,9 @@ arc::Future<> initialize() {
     STARTUPINFO si = { sizeof(si) };
     PROCESS_INFORMATION pi;
 
-    auto logPath = utils::string::pathToString(Mod::get()->getConfigDir() / "watchdog.log");
+    auto logPath = utils::string::pathToString(
+        Mod::get()->getConfigDir() / asp::SystemTime::now().format("watchdog-{:%Y-%m-%dT%H.%M.%S}.log")
+    );
 
     auto cmd = fmt::format(
         "\"{}\" {} \"{}\" {}",
