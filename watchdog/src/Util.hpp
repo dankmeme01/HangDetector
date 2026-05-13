@@ -3,14 +3,17 @@
 
 static std::optional<std::ofstream> g_logFile;
 static asp::Instant g_lastFlush = asp::Instant::now();
+static auto epoch = asp::Instant::now();
 
 template <typename... Args>
 void log(fmt::format_string<Args...> fmtStr, Args&&... args) {
+    auto sinceEpoch = epoch.elapsed();
+
     auto str = fmt::format(fmtStr, std::forward<Args>(args)...);
     fmt::println("{}", str);
 
     if (g_logFile) {
-        (*g_logFile) << str << '\n';
+        (*g_logFile) << '[' << std::setprecision(4) << sinceEpoch.seconds<float>() << "] " << str << '\n';
 
         if (g_lastFlush.elapsed() > asp::Duration::fromSecs(1)) {
             g_logFile->flush();
