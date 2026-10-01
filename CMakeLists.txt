@@ -20,7 +20,7 @@ else()
 endif()
 
 set(ARC_FEATURE_NET ON CACHE BOOL "" FORCE)
-set(GEODE_ARC_VERSION "#d67b13185f7ce818cd0cd301561754e40e85b1db" CACHE STRING "" FORCE)
+set(GEODE_ARC_VERSION "@1.5.10" CACHE STRING "" FORCE)
 add_subdirectory(watchdog)
 add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/watchdog/include)
