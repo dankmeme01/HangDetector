@@ -1,3 +1,7 @@
+## v1.0.4
+
+* Don't trigger if a debugger is attached
+
 ## v1.0.3
 
 * Always terminate the GD process after closing the hang detector message box

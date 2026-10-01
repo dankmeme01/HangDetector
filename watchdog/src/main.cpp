@@ -24,7 +24,21 @@ Future<std::optional<DWORD>> waitForExit(Duration deadline) {
     co_return std::nullopt;
 }
 
+bool isParentDebugged() {
+    BOOL debugged = false;
+    if (!CheckRemoteDebuggerPresent(g_parent, &debugged)) {
+        log("Failed to check if parent is debugged: {}", GetLastError());
+        return false;
+    }
+    return debugged;
+}
+
 Future<> handleDeath() {
+    if (isParentDebugged()) {
+        log("Game is hung but is instrumented by a debugger, simply terminating watchdog. Goodbye!");
+        co_return;
+    }
+
     log("Game likely died, giving 3 seconds to terminate and checking exit status..");
     auto ec = co_await waitForExit(Duration::fromSecs(3));
 
