@@ -6,8 +6,8 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CPM.cmake)
 add_executable(watchdog src/main.cpp)
 
 set(ARC_FEATURE_NET ON CACHE BOOL "" FORCE)
-CPMAddPackage("gh:dankmeme01/arc@1.5.10")
-CPMAddPackage("gh:geode-sdk/json@3.3.0")
+CPMAddPackage("gh:dankmeme01/arc@1.6.6")
+CPMAddPackage("gh:geode-sdk/json@4.1.0")
 
 target_compile_definitions(${PROJECT_NAME} INTERFACE MAT_JSON_DYNAMIC=1)
 target_link_libraries(watchdog PRIVATE arc mat-json dbghelp)

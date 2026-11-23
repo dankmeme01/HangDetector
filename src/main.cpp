@@ -109,17 +109,14 @@ arc::Future<> initialize() {
     auto port = listener.localAddress().unwrap().port();
     log::info("TCP listener bound on 0.0.0.0:{}", port);
 
-    auto s = utils::string::pathToString(exe);
     STARTUPINFO si = { sizeof(si) };
     PROCESS_INFORMATION pi;
 
-    auto logPath = utils::string::pathToString(
-        Mod::get()->getConfigDir() / asp::SystemTime::now().format("watchdog-{:%Y-%m-%dT%H.%M.%S}.log")
-    );
+    auto logPath = Mod::get()->getConfigDir() / asp::SystemTime::now().format("watchdog-{:%Y-%m-%dT%H.%M.%S}.log");
 
     auto cmd = fmt::format(
         "\"{}\" {} \"{}\" {}",
-        s,
+        exe,
         GetCurrentProcessId(),
         logPath,
         port

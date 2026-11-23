@@ -1,11 +1,11 @@
 {
-	"geode": "5.10.1",
+	"geode": "6.0.0-beta.2",
 	"gd": {
-		"win": "2.2081"
+		"win": "2.2091"
 	},
 	"id": "dankmeme.hang-detector",
 	"name": "Hang Detector",
-	"version": "v1.0.4",
+	"version": "v1.0.5",
 	"developer": "dankmeme",
 	"description": "Detects when the game hangs after closure",
 	"dependencies": {},

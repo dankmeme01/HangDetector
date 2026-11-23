@@ -1,3 +1,7 @@
+## v1.0.5
+
+* Port to Geode v6.0.0 for GD 2.209
+
 ## v1.0.4
 
 * Don't trigger if a debugger is attached

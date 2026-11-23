@@ -106,7 +106,11 @@ Future<Result<>> asyncMain(int argc, const char** argv) {
 
     // open the log file
     auto logPath = std::string(argv[2]);
-    g_logFile.emplace(logPath);
+    if (auto result = asp::fs::File::create(logPath)) {
+        g_logFile.emplace(std::move(result).unwrap());
+    } else {
+        log("Failed to open log file {}: {}", logPath, result.unwrapErr());
+    }
 
     // parse port
     std::string_view portStr(argv[3]);
@@ -137,7 +141,7 @@ Future<Result<>> asyncMain(int argc, const char** argv) {
     }
 
     if (auto e = tres.unwrap().err()) {
-        log("Failed to read JSON message: {}", e);
+        log("Failed to read JSON message: {}", *e);
         co_return Err("Failed to read JSON message");
     }
 

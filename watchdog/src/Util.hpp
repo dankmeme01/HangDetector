@@ -1,7 +1,8 @@
 #pragma once
+#include <asp/fs.hpp>
 #include <shared.hpp>
 
-static std::optional<std::ofstream> g_logFile;
+static std::optional<asp::fs::BufferedFile> g_logFile;
 static asp::Instant g_lastFlush = asp::Instant::now();
 static auto epoch = asp::Instant::now();
 
@@ -13,10 +14,10 @@ void log(fmt::format_string<Args...> fmtStr, Args&&... args) {
     fmt::println("{}", str);
 
     if (g_logFile) {
-        (*g_logFile) << '[' << std::setprecision(4) << sinceEpoch.seconds<float>() << "] " << str << '\n';
+        (void) g_logFile->write(fmt::format("[{:.4f}] {}\n", sinceEpoch.seconds<float>(), str));
 
         if (g_lastFlush.elapsed() > asp::Duration::fromSecs(1)) {
-            g_logFile->flush();
+            (void) g_logFile->flush();
             g_lastFlush = asp::Instant::now();
         }
     }

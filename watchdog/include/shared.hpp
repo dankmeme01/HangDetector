@@ -3,7 +3,7 @@
 #include <Windows.h>
 #include <arc/prelude.hpp>
 #include <matjson.hpp>
-#include <matjson/reflect.hpp>
+#include <matjson/reflect_all.hpp>
 
 inline arc::Future<geode::Result<matjson::Value>> readJsonMessage(arc::TcpStream& stream) {
     char buf[8192];
